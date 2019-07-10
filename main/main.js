@@ -50,6 +50,29 @@ function calculateTotalPrice(barcodeCountPriceItems) {
     .reduce((totalPrice, itemsPrice) => totalPrice += itemsPrice);
 }
 
-function printReceipt(inputs) {
-  console.log('请在此实现练习要求，并改写该行代码。');
+function createReceipt(barcodeCountPriceItems, totalPrice) {
+  let result = '***<没钱赚商店>收据***\n';
+  for (const barcodeCountPriceItem of barcodeCountPriceItems) {
+    const count = barcodeCountPriceItem.count;
+    const name = barcodeCountPriceItem.item.name;
+    const unit = barcodeCountPriceItem.item.unit;
+    const price = barcodeCountPriceItem.item.price;
+    const itemsPrice = barcodeCountPriceItem.itemsPrice;
+    result += `名称：${name}，数量：${count}${unit}，单价：${price.toFixed(2)}(元)，小计：${itemsPrice.toFixed(2)}(元)\n`;
+  }
+  result += '----------------------\n';
+  result += `总计：${totalPrice.toFixed(2)}(元)\n`;
+  result += '**********************';
+  return result;
 }
+
+function printReceipt(inputs) {
+  const barcodeCounts = countItems(inputs);
+  const allItems = loadAllItems();
+  const barcodeCountItems = conbineItem(barcodeCounts, allItems);
+  const barcodeCountPriceItems = calculateItemsPrice(barcodeCountItems);
+  const totalPrice = calculateTotalPrice(barcodeCountPriceItems);
+  const receipt = createReceipt(barcodeCountPriceItems, totalPrice);
+  console.log(receipt);
+}
+
